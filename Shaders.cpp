@@ -226,7 +226,7 @@ void NiTexturingProperty::GetChildRefs(std::set<Ref*>& refs) {
 	decalTex2.GetChildRefs(refs);
 	decalTex3.GetChildRefs(refs);
 
-	for (auto &t : shaderTex)
+	for (auto& t : shaderTex)
 		t.GetChildRefs(refs);
 }
 
@@ -246,7 +246,7 @@ void NiTexturingProperty::GetChildIndices(std::vector<int>& indices) {
 	decalTex2.GetChildIndices(indices);
 	decalTex3.GetChildIndices(indices);
 
-	for (auto &t : shaderTex)
+	for (auto& t : shaderTex)
 		t.GetChildIndices(indices);
 }
 
@@ -338,13 +338,13 @@ void BSShaderProperty::Get(NiStream& stream) {
 			stream >> bslspShaderType;
 			stream >> numSF1;
 			stream >> numSF2;
-		
+
 			SF1.resize(numSF1);
 			SF2.resize(numSF2);
-		
+
 			for (int i = 0; i < numSF1; i++)
 				stream >> SF1[i];
-		
+
 			for (int i = 0; i < numSF2; i++)
 				stream >> SF2[i];
 		}
@@ -376,10 +376,10 @@ void BSShaderProperty::Put(NiStream& stream) {
 			stream << bslspShaderType;
 			stream << numSF1;
 			stream << numSF2;
-		
+
 			for (int i = 0; i < numSF1; i++)
 				stream << SF1[i];
-		
+
 			for (int i = 0; i < numSF2; i++)
 				stream << SF2[i];
 		}
@@ -398,7 +398,7 @@ uint BSShaderProperty::GetShaderType() {
 }
 
 void BSShaderProperty::SetShaderType(uint type) {
-	shaderType = (BSShaderType)type;
+	shaderType = (BSShaderType) type;
 }
 
 bool BSShaderProperty::IsSkinTinted() {
@@ -578,7 +578,8 @@ BSLightingShaderProperty::BSLightingShaderProperty() {
 	unkFloat1 = std::numeric_limits<float>::max();
 }
 
-BSLightingShaderProperty::BSLightingShaderProperty(NiVersion& version) : BSLightingShaderProperty() {
+BSLightingShaderProperty::BSLightingShaderProperty(NiVersion& version)
+	: BSLightingShaderProperty() {
 	if (version.User() == 12 && version.Stream() >= 120) {
 		shaderFlags1 = 0x80400203;
 		shaderFlags2 = 0x00000081;
@@ -654,64 +655,62 @@ void BSLightingShaderProperty::Get(NiStream& stream) {
 		stream >> thickObject;
 		stream >> mixAlbedo;
 		stream >> hasTextureArrays;
-	
+
 		if (hasTextureArrays) {
 			stream >> numTextureArrays;
-	
+
 			textureArrays.resize(numTextureArrays);
-	
+
 			for (int i = 0; i < numTextureArrays; i++)
 				textureArrays[i].Get(stream);
 		}
 	}
 
 	switch (bslspShaderType) {
-	case 1:
-		if (stream.GetVersion().User() == 12 && stream.GetVersion().Stream() <= 130)
-			stream >> environmentMapScale;
+		case 1:
+			if (stream.GetVersion().User() == 12 && stream.GetVersion().Stream() <= 130)
+				stream >> environmentMapScale;
 
-		if (stream.GetVersion().User() == 12 && stream.GetVersion().Stream() == 130) {
-			stream >> useSSR;
-			stream >> wetnessUseSSR;
-		}
+			if (stream.GetVersion().User() == 12 && stream.GetVersion().Stream() == 130) {
+				stream >> useSSR;
+				stream >> wetnessUseSSR;
+			}
 
-		if (stream.GetVersion().User() == 12 && stream.GetVersion().Stream() == 155) {
-			stream >> skinTintColor;
-			stream >> skinTintAlpha;
-		}
-		break;
-	case 5:
-		if (stream.GetVersion().User() == 12 && stream.GetVersion().Stream() <= 130)
-			stream >> skinTintColor;
+			if (stream.GetVersion().User() == 12 && stream.GetVersion().Stream() == 155) {
+				stream >> skinTintColor;
+				stream >> skinTintAlpha;
+			}
+			break;
+		case 5:
+			if (stream.GetVersion().User() == 12 && stream.GetVersion().Stream() <= 130)
+				stream >> skinTintColor;
 
-		if (stream.GetVersion().User() == 12 && stream.GetVersion().Stream() == 130)
-			stream >> skinTintAlpha;
+			if (stream.GetVersion().User() == 12 && stream.GetVersion().Stream() == 130)
+				stream >> skinTintAlpha;
 
-		if (stream.GetVersion().User() == 12 && stream.GetVersion().Stream() == 155)
-			stream >> hairTintColor;
-		break;
-	case 6:
-		if (stream.GetVersion().User() == 12 && stream.GetVersion().Stream() <= 130)
-			stream >> hairTintColor;
-		break;
-	case 7:
-		stream >> maxPasses;
-		stream >> scale;
-		break;
-	case 11:
-		stream >> parallaxInnerLayerThickness;
-		stream >> parallaxRefractionScale;
-		stream >> parallaxInnerLayerTextureScale;
-		stream >> parallaxEnvmapStrength;
-		break;
-	case 14:
-		stream >> sparkleParameters;
-		break;
-	case 16:
-		stream >> eyeCubemapScale;
-		stream >> eyeLeftReflectionCenter;
-		stream >> eyeRightReflectionCenter;
-		break;
+			if (stream.GetVersion().User() == 12 && stream.GetVersion().Stream() == 155)
+				stream >> hairTintColor;
+			break;
+		case 6:
+			if (stream.GetVersion().User() == 12 && stream.GetVersion().Stream() <= 130)
+				stream >> hairTintColor;
+			break;
+		case 7:
+			stream >> maxPasses;
+			stream >> scale;
+			break;
+		case 11:
+			stream >> parallaxInnerLayerThickness;
+			stream >> parallaxRefractionScale;
+			stream >> parallaxInnerLayerTextureScale;
+			stream >> parallaxEnvmapStrength;
+			break;
+		case 14: stream >> sparkleParameters; break;
+		case 16:
+			stream >> eyeCubemapScale;
+			stream >> eyeLeftReflectionCenter;
+			stream >> eyeRightReflectionCenter;
+			break;
 	}
 }
 
@@ -775,62 +774,60 @@ void BSLightingShaderProperty::Put(NiStream& stream) {
 		stream << thickObject;
 		stream << mixAlbedo;
 		stream << hasTextureArrays;
-	
+
 		if (hasTextureArrays) {
 			stream << numTextureArrays;
-	
+
 			for (int i = 0; i < numTextureArrays; i++)
 				textureArrays[i].Put(stream);
 		}
 	}
 
 	switch (bslspShaderType) {
-	case 1:
-		if (stream.GetVersion().User() == 12 && stream.GetVersion().Stream() <= 130)
-			stream << environmentMapScale;
+		case 1:
+			if (stream.GetVersion().User() == 12 && stream.GetVersion().Stream() <= 130)
+				stream << environmentMapScale;
 
-		if (stream.GetVersion().User() == 12 && stream.GetVersion().Stream() == 130) {
-			stream << useSSR;
-			stream << wetnessUseSSR;
-		}
+			if (stream.GetVersion().User() == 12 && stream.GetVersion().Stream() == 130) {
+				stream << useSSR;
+				stream << wetnessUseSSR;
+			}
 
-		if (stream.GetVersion().User() == 12 && stream.GetVersion().Stream() == 155) {
-			stream << skinTintColor;
-			stream << skinTintAlpha;
-		}
-		break;
-	case 5:
-		if (stream.GetVersion().User() == 12 && stream.GetVersion().Stream() <= 130)
-			stream << skinTintColor;
+			if (stream.GetVersion().User() == 12 && stream.GetVersion().Stream() == 155) {
+				stream << skinTintColor;
+				stream << skinTintAlpha;
+			}
+			break;
+		case 5:
+			if (stream.GetVersion().User() == 12 && stream.GetVersion().Stream() <= 130)
+				stream << skinTintColor;
 
-		if (stream.GetVersion().User() == 12 && stream.GetVersion().Stream() == 130)
-			stream << skinTintAlpha;
+			if (stream.GetVersion().User() == 12 && stream.GetVersion().Stream() == 130)
+				stream << skinTintAlpha;
 
-		if (stream.GetVersion().User() == 12 && stream.GetVersion().Stream() == 155)
-			stream << hairTintColor;
-		break;
-	case 6:
-		if (stream.GetVersion().User() == 12 && stream.GetVersion().Stream() <= 130)
-			stream << hairTintColor;
-		break;
-	case 7:
-		stream << maxPasses;
-		stream << scale;
-		break;
-	case 11:
-		stream << parallaxInnerLayerThickness;
-		stream << parallaxRefractionScale;
-		stream << parallaxInnerLayerTextureScale;
-		stream << parallaxEnvmapStrength;
-		break;
-	case 14:
-		stream << sparkleParameters;
-		break;
-	case 16:
-		stream << eyeCubemapScale;
-		stream << eyeLeftReflectionCenter;
-		stream << eyeRightReflectionCenter;
-		break;
+			if (stream.GetVersion().User() == 12 && stream.GetVersion().Stream() == 155)
+				stream << hairTintColor;
+			break;
+		case 6:
+			if (stream.GetVersion().User() == 12 && stream.GetVersion().Stream() <= 130)
+				stream << hairTintColor;
+			break;
+		case 7:
+			stream << maxPasses;
+			stream << scale;
+			break;
+		case 11:
+			stream << parallaxInnerLayerThickness;
+			stream << parallaxRefractionScale;
+			stream << parallaxInnerLayerTextureScale;
+			stream << parallaxEnvmapStrength;
+			break;
+		case 14: stream << sparkleParameters; break;
+		case 16:
+			stream << eyeCubemapScale;
+			stream << eyeLeftReflectionCenter;
+			stream << eyeRightReflectionCenter;
+			break;
 	}
 }
 

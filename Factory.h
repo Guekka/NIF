@@ -5,9 +5,8 @@ See the included LICENSE file
 
 #pragma once
 
-#include "BasicTypes.h"
 #include "Animation.h"
-#include "bhk.h"
+#include "BasicTypes.h"
 #include "ExtraData.h"
 #include "Geometry.h"
 #include "Keys.h"
@@ -15,6 +14,7 @@ See the included LICENSE file
 #include "Particles.h"
 #include "Shaders.h"
 #include "Skin.h"
+#include "bhk.h"
 
 #include <unordered_map>
 
@@ -28,9 +28,7 @@ template<typename T>
 class NiFactoryType : public NiFactory {
 public:
 	// Create new NiObject
-	virtual std::shared_ptr<NiObject> Create() override {
-		return std::make_shared<T>();
-	}
+	virtual std::shared_ptr<NiObject> Create() override { return std::make_shared<T>(); }
 
 	// Load new NiObject from file
 	virtual std::shared_ptr<NiObject> Load(NiStream& stream) override {
