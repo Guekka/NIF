@@ -31,7 +31,7 @@ int NifFile::GetBlockID(NiObject* block) {
 	if (it != blocks.end())
 		return std::distance(blocks.begin(), it);
 
-	return 0xFFFFFFFF;
+	return NIF_NPOS;
 }
 
 NiNode* NifFile::GetParentNode(NiObject* childBlock) {
@@ -245,7 +245,7 @@ void NifFile::SetShapeOrder(const std::vector<std::string>& order) {
 		std::vector<int> oldOrderIds;
 		for (auto s : oldOrder) {
 			int blockID = GetBlockID(FindBlockByName<NiShape>(s));
-			if (blockID != 0xFFFFFFFF)
+			if (blockID != NIF_NPOS)
 				oldOrderIds.push_back(blockID);
 		}
 
@@ -290,77 +290,77 @@ void NifFile::SetSortIndex(const int id, std::vector<int>& newIndices, int& newI
 }
 
 void NifFile::SortAVObject(NiAVObject* avobj, std::vector<int>& newIndices, int& newIndex) {
-	int id = 0xFFFFFFFF;
+	int id = NIF_NPOS;
 	for (auto& r : avobj->GetExtraData()) {
 		id = r.GetIndex();
-		if (id != 0xFFFFFFFF)
+		if (id != NIF_NPOS)
 			SetSortIndex(id, newIndices, newIndex);
 	}
 
 	id = avobj->GetControllerRef();
-	if (id != 0xFFFFFFFF)
+	if (id != NIF_NPOS)
 		SetSortIndex(id, newIndices, newIndex);
 
 	for (auto& r : avobj->GetProperties()) {
 		id = r.GetIndex();
-		if (id != 0xFFFFFFFF)
+		if (id != NIF_NPOS)
 			SetSortIndex(id, newIndices, newIndex);
 
 		auto shader = hdr.GetBlock<NiShader>(id);
 		if (shader) {
 			id = shader->GetTextureSetRef();
-			if (id != 0xFFFFFFFF)
+			if (id != NIF_NPOS)
 				SetSortIndex(id, newIndices, newIndex);
 		}
 	}
 
 	id = avobj->GetCollisionRef();
-	if (id != 0xFFFFFFFF)
+	if (id != NIF_NPOS)
 		SetSortIndex(id, newIndices, newIndex);
 }
 
 void NifFile::SortShape(NiShape* shape, std::vector<int>& newIndices, int& newIndex) {
 	int id = shape->GetDataRef();
-	if (id != 0xFFFFFFFF)
+	if (id != NIF_NPOS)
 		SetSortIndex(id, newIndices, newIndex);
 
 	id = shape->GetSkinInstanceRef();
-	if (id != 0xFFFFFFFF) {
+	if (id != NIF_NPOS) {
 		SetSortIndex(id, newIndices, newIndex);
 
 		auto niSkinInst = hdr.GetBlock<NiSkinInstance>(id);
 		if (niSkinInst) {
 			id = niSkinInst->GetDataRef();
-			if (id != 0xFFFFFFFF)
+			if (id != NIF_NPOS)
 				SetSortIndex(id, newIndices, newIndex);
 
 			id = niSkinInst->GetSkinPartitionRef();
-			if (id != 0xFFFFFFFF)
+			if (id != NIF_NPOS)
 				SetSortIndex(id, newIndices, newIndex);
 		}
 
 		auto bsSkinInst = hdr.GetBlock<BSSkinInstance>(id);
 		if (bsSkinInst) {
 			id = bsSkinInst->GetDataRef();
-			if (id != 0xFFFFFFFF)
+			if (id != NIF_NPOS)
 				SetSortIndex(id, newIndices, newIndex);
 		}
 	}
 
 	id = shape->GetShaderPropertyRef();
-	if (id != 0xFFFFFFFF) {
+	if (id != NIF_NPOS) {
 		SetSortIndex(id, newIndices, newIndex);
 
 		auto shader = hdr.GetBlock<NiShader>(id);
 		if (shader) {
 			id = shader->GetTextureSetRef();
-			if (id != 0xFFFFFFFF)
+			if (id != NIF_NPOS)
 				SetSortIndex(id, newIndices, newIndex);
 		}
 	}
 
 	id = shape->GetAlphaPropertyRef();
-	if (id != 0xFFFFFFFF)
+	if (id != NIF_NPOS)
 		SetSortIndex(id, newIndices, newIndex);
 }
 
@@ -437,7 +437,7 @@ void NifFile::SortGraph(NiNode* root, std::vector<int>& newIndices, int& newInde
 		// Update children
 		for (auto &child : children) {
 			int oldChildId = child.GetIndex();
-			if (oldChildId != 0xFFFFFFFF) {
+			if (oldChildId != NIF_NPOS) {
 				// Store new index of block
 				SetSortIndex(oldChildId, newIndices, newIndex);
 
@@ -503,7 +503,7 @@ bool NifFile::DeleteUnreferencedNodes(int* deletionCount) {
 			continue;
 
 		int blockId = GetBlockID(node);
-		if (blockId == 0xFFFFFFFF)
+		if (blockId == NIF_NPOS)
 			continue;
 
 		if (!CanDeleteNode(node))
@@ -534,7 +534,7 @@ NiNode* NifFile::AddNode(const std::string& nodeName, const MatTransform& xformT
 	newNode->SetTransformToParent(xformToParent);
 
 	int newNodeId = hdr.AddBlock(newNode);
-	if (newNodeId != 0xFFFFFFFF)
+	if (newNodeId != NIF_NPOS)
 		parent->GetChildren().AddBlockRef(newNodeId);
 
 	return newNode;
@@ -553,7 +553,7 @@ bool NifFile::CanDeleteNode(NiNode* node) {
 
 	// Only delete if the node has no child refs
 	for (auto &ref : refs)
-		if (ref->GetIndex() != 0xFFFFFFFF)
+		if (ref->GetIndex() != NIF_NPOS)
 			return false;
 
 	return true;
@@ -629,7 +629,7 @@ int NifFile::GetTextureSlot(NiShader* shader, std::string& outTexFile, int texIn
 	outTexFile.clear();
 
 	int textureSetRef = shader->GetTextureSetRef();
-	if (textureSetRef == 0xFFFFFFFF) {
+	if (textureSetRef == NIF_NPOS) {
 		auto effectShader = dynamic_cast<BSEffectShaderProperty*>(shader);
 		if (effectShader) {
 			switch (texIndex) {
@@ -666,7 +666,7 @@ int NifFile::GetTextureSlot(NiShader* shader, std::string& outTexFile, int texIn
 
 void NifFile::SetTextureSlot(NiShader* shader, std::string& outTexFile, int texIndex) {
 	int textureSetRef = shader->GetTextureSetRef();
-	if (textureSetRef == 0xFFFFFFFF) {
+	if (textureSetRef == NIF_NPOS) {
 		auto effectShader = dynamic_cast<BSEffectShaderProperty*>(shader);
 		if (effectShader) {
 			switch (texIndex) {
@@ -769,7 +769,7 @@ void NifFile::CloneChildren(NiObject* block, NifFile* srcNif) {
 					str->SetIndex(strId);
 				}
 
-				if (parentOldId != 0xFFFFFFFF) {
+				if (parentOldId != NIF_NPOS) {
 					std::set<Ref*> ptrs;
 					destChild->GetPtrs(ptrs);
 
@@ -785,7 +785,7 @@ void NifFile::CloneChildren(NiObject* block, NifFile* srcNif) {
 		}
 	};
 
-	cloneBlock(block, 0xFFFFFFFF, 0xFFFFFFFF);
+	cloneBlock(block, NIF_NPOS, NIF_NPOS);
 }
 
 NiShape* NifFile::CloneShape(NiShape* srcShape, const std::string& destShapeName, NifFile* srcNif) {
@@ -914,12 +914,12 @@ int NifFile::CloneNamedNode(const std::string& nodeName, NifFile* srcNif) {
 
 	auto srcNode = srcNif->FindBlockByName<NiNode>(nodeName);
 	if (!srcNode)
-		return 0xFFFFFFFF;
+		return NIF_NPOS;
 
 	auto destNode = srcNode->Clone();
 	destNode->SetName(nodeName);
-	destNode->SetCollisionRef(0xFFFFFFFF);
-	destNode->SetControllerRef(0xFFFFFFFF);
+	destNode->SetCollisionRef(NIF_NPOS);
+	destNode->SetControllerRef(NIF_NPOS);
 	destNode->GetChildren().Clear();
 	destNode->GetEffects().Clear();
 
@@ -1015,7 +1015,7 @@ OptResult NifFile::OptimizeFor(OptOptions& options) {
 				if (!options.removeParallax)
 					removeVertexColors = false;
 
-				// Only remove vertex colors if all are 0xFFFFFFFF
+				// Only remove vertex colors if all are NIF_NPOS
 				if (removeVertexColors) {
 					Color4 white(1.0f, 1.0f, 1.0f, 1.0f);
 					for (auto &c : colors) {
@@ -1268,7 +1268,7 @@ OptResult NifFile::OptimizeFor(OptOptions& options) {
 				if (!options.removeParallax)
 					removeVertexColors = false;
 
-				// Only remove vertex colors if all are 0xFFFFFFFF
+				// Only remove vertex colors if all are NIF_NPOS
 				if (colors && removeVertexColors) {
 					Color4 white(1.0f, 1.0f, 1.0f, 1.0f);
 					for (auto &c : (*colors)) {
@@ -1809,7 +1809,7 @@ void NifFile::SetShapeBoneIDList(NiShape* shape, std::vector<int>& inList) {
 	if (!shape)
 		return;
 
-	if (shape->GetSkinInstanceRef() == 0xFFFFFFFF)
+	if (shape->GetSkinInstanceRef() == NIF_NPOS)
 		return;
 
 	BSSkinBoneData* boneData = nullptr;
@@ -2040,14 +2040,14 @@ bool NifFile::GetShapeBoneTransform(NiShape* shape, const std::string& boneName,
 }
 
 bool NifFile::GetShapeBoneTransform(NiShape* shape, const int boneIndex, MatTransform& outTransform) {
-	if (boneIndex == 0xFFFFFFFF)
+	if (boneIndex == NIF_NPOS)
 		return GetShapeTransformGlobalToSkin(shape, outTransform);
 	else
 		return GetShapeTransformSkinToBone(shape, boneIndex, outTransform);
 }
 
 bool NifFile::SetShapeBoneTransform(NiShape* shape, const int boneIndex, MatTransform& inTransform) {
-	if (boneIndex == 0xFFFFFFFF)
+	if (boneIndex == NIF_NPOS)
 		SetShapeTransformGlobalToSkin(shape, inTransform);
 	else
 		SetShapeTransformSkinToBone(shape, boneIndex, inTransform);
@@ -2060,7 +2060,7 @@ bool NifFile::SetShapeBoneBounds(const std::string& shapeName, const int boneInd
 		return false;
 
 	auto skinForBoneRef = hdr.GetBlock<BSSkinInstance>(shape->GetSkinInstanceRef());
-	if (skinForBoneRef && boneIndex != 0xFFFFFFFF) {
+	if (skinForBoneRef && boneIndex != NIF_NPOS) {
 		auto bsSkin = hdr.GetBlock<BSSkinBoneData>(skinForBoneRef->GetDataRef());
 		if (!bsSkin)
 			return false;
@@ -2891,7 +2891,7 @@ void NifFile::CalcTangentsForShape(NiShape* shape) {
 int NifFile::ApplyNormalsFromFile(NifFile& srcNif, const std::string& shapeName) {
 	auto shape = FindBlockByName<NiShape>(shapeName);
 	if (!shape)
-		return -1;
+		return NIF_NPOS;
 
 	auto srcShape = srcNif.FindBlockByName<NiShape>(shapeName);
 	if (!srcShape)
@@ -3133,7 +3133,7 @@ void NifFile::RotateShape(NiShape* shape, const Vector3& angle, std::unordered_m
 
 NiAlphaProperty* NifFile::GetAlphaProperty(NiShape* shape) {
 	int alphaRef = shape->GetAlphaPropertyRef();
-	if (alphaRef == 0xFFFFFFFF) {
+	if (alphaRef == NIF_NPOS) {
 		for (auto& prop : shape->GetProperties()) {
 			auto alphaProp = hdr.GetBlock<NiAlphaProperty>(prop.GetIndex());
 			if (alphaProp) {
@@ -3160,14 +3160,14 @@ int NifFile::AssignAlphaProperty(NiShape* shape, NiAlphaProperty* alphaProp) {
 		return alphaRef;
 	}
 
-	return 0xFFFFFFFF;
+	return NIF_NPOS;
 }
 
 void NifFile::RemoveAlphaProperty(NiShape* shape) {
 	auto alpha = hdr.GetBlock<NiAlphaProperty>(shape->GetAlphaPropertyRef());
 	if (alpha) {
 		hdr.DeleteBlock(shape->GetAlphaPropertyRef());
-		shape->SetAlphaPropertyRef(0xFFFFFFFF);
+		shape->SetAlphaPropertyRef(NIF_NPOS);
 	}
 
 	for (int i = 0; i < shape->GetProperties().GetSize(); i++) {
@@ -3199,13 +3199,13 @@ void NifFile::DeleteShape(NiShape* shape) {
 }
 
 void NifFile::DeleteShader(NiShape* shape) {
-	if (shape->GetShaderPropertyRef() != 0xFFFFFFFF) {
+	if (shape->GetShaderPropertyRef() != NIF_NPOS) {
 		auto shader = hdr.GetBlock<NiShader>(shape->GetShaderPropertyRef());
 		if (shader) {
 			hdr.DeleteBlock(shader->GetTextureSetRef());
 			hdr.DeleteBlock(shader->GetControllerRef());
 			hdr.DeleteBlock(shape->GetShaderPropertyRef());
-			shape->SetShaderPropertyRef(0xFFFFFFFF);
+			shape->SetShaderPropertyRef(NIF_NPOS);
 		}
 	}
 
@@ -3231,14 +3231,14 @@ void NifFile::DeleteSkinning(NiShape* shape) {
 		hdr.DeleteBlock(skinInst->GetDataRef());
 		hdr.DeleteBlock(skinInst->GetSkinPartitionRef());
 		hdr.DeleteBlock(shape->GetSkinInstanceRef());
-		shape->SetSkinInstanceRef(0xFFFFFFFF);
+		shape->SetSkinInstanceRef(NIF_NPOS);
 	}
 
 	auto bsSkinInst = hdr.GetBlock<BSSkinInstance>(shape->GetSkinInstanceRef());
 	if (bsSkinInst) {
 		hdr.DeleteBlock(bsSkinInst->GetDataRef());
 		hdr.DeleteBlock(shape->GetSkinInstanceRef());
-		shape->SetSkinInstanceRef(0xFFFFFFFF);
+		shape->SetSkinInstanceRef(NIF_NPOS);
 	}
 
 	shape->SetSkinned(false);
@@ -3332,7 +3332,7 @@ bool NifFile::DeleteVertsForShape(NiShape* shape, const std::vector<ushort>& ind
 				if (val > highestRemoved) {
 					val -= indices.size();
 				}
-				else if (indexCollapse[val] == -1) {
+				else if (indexCollapse[val] == NIF_NPOS) {
 					integersData.erase(integersData.begin() + i);
 				}
 				else
@@ -3616,7 +3616,7 @@ void NifFile::UpdatePartitionFlags(NiShape* shape) {
 
 void NifFile::CreateSkinning(NiShape* shape) {
 	if (shape->HasType<NiTriShape>()) {
-		if (shape->GetSkinInstanceRef() == 0xFFFFFFFF) {
+		if (shape->GetSkinInstanceRef() == NIF_NPOS) {
 			auto nifSkinData = new NiSkinData();
 			int skinDataID = hdr.AddBlock(nifSkinData);
 
@@ -3636,7 +3636,7 @@ void NifFile::CreateSkinning(NiShape* shape) {
 		}
 	}
 	else if (shape->HasType<NiTriStrips>()) {
-		if (shape->GetSkinInstanceRef() == 0xFFFFFFFF) {
+		if (shape->GetSkinInstanceRef() == NIF_NPOS) {
 			auto nifSkinData = new NiSkinData();
 			int skinDataID = hdr.AddBlock(nifSkinData);
 
@@ -3656,7 +3656,7 @@ void NifFile::CreateSkinning(NiShape* shape) {
 		}
 	}
 	else if (shape->HasType<BSTriShape>()) {
-		if (shape->GetSkinInstanceRef() == 0xFFFFFFFF) {
+		if (shape->GetSkinInstanceRef() == NIF_NPOS) {
 			int skinInstID;
 			if (hdr.GetVersion().Stream() == 100) {
 				auto nifSkinData = new NiSkinData();

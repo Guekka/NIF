@@ -492,7 +492,7 @@ public:
 	public:
 		uint startIndex = 0;
 		uint numPrimitives = 0;
-		uint parentArrayIndex = 0xFFFFFFFF;
+		uint parentArrayIndex = NIF_NPOS;
 		uint numSubSegments = 0;
 		std::vector<BSSITSSubSegment> subSegments;
 	};
@@ -500,7 +500,7 @@ public:
 	class BSSITSSubSegmentDataRecord {
 	public:
 		uint userSlotID = 0;
-		uint material = 0xFFFFFFFF;
+		uint material = NIF_NPOS;
 		uint numData = 0;
 		std::vector<float> extraData;
 	};

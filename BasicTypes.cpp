@@ -4,6 +4,7 @@ See the included LICENSE file
 */
 
 #include "BasicTypes.h"
+
 #include <regex>
 
 static const std::string NIF_GAMEBRYO = "Gamebryo File Format";
@@ -178,7 +179,7 @@ void NiHeader::SetExportInfo(const std::string& exportInfo) {
 }
 
 void NiHeader::DeleteBlock(int blockId) {
-	if (blockId == 0xFFFFFFFF)
+	if (blockId == NIF_NPOS)
 		return;
 
 	ushort blockTypeId = blockTypeIndices[blockId];
@@ -234,8 +235,8 @@ int NiHeader::AddBlock(NiObject* newBlock) {
 }
 
 int NiHeader::ReplaceBlock(int oldBlockId, NiObject* newBlock) {
-	if (oldBlockId == 0xFFFFFFFF)
-		return 0xFFFFFFFF;
+	if (oldBlockId == NIF_NPOS)
+		return NIF_NPOS;
 
 	ushort blockTypeId = blockTypeIndices[oldBlockId];
 	int blockTypeRefCount = 0;
@@ -314,7 +315,7 @@ void NiHeader::FixBlockAlignment(const std::vector<NiObject*>& currentTree) {
 }
 
 void NiHeader::SwapBlocks(const int blockIndexLo, const int blockIndexHi) {
-	if (blockIndexLo == 0xFFFFFFFF || blockIndexHi == 0xFFFFFFFF ||
+	if (blockIndexLo == NIF_NPOS || blockIndexHi == NIF_NPOS ||
 		blockIndexLo >= numBlocks || blockIndexHi >= numBlocks ||
 		blockIndexLo == blockIndexHi)
 		return;
@@ -330,7 +331,7 @@ void NiHeader::SwapBlocks(const int blockIndexLo, const int blockIndexHi) {
 }
 
 bool NiHeader::IsBlockReferenced(const int blockId) {
-	if (blockId == 0xFFFFFFFF)
+	if (blockId == NIF_NPOS)
 		return false;
 
 	for (auto &block : (*blocks)) {
@@ -347,7 +348,7 @@ bool NiHeader::IsBlockReferenced(const int blockId) {
 }
 
 int NiHeader::GetBlockRefCount(const int blockId) {
-	if (blockId == 0xFFFFFFFF)
+	if (blockId == NIF_NPOS)
 		return 0;
 
 	int refCount = 0;
@@ -405,7 +406,7 @@ uint NiHeader::GetBlockSize(const uint blockId) {
 	if (blockId >= 0 && blockId < numBlocks)
 		return blockSizes[blockId];
 
-	return 0xFFFFFFFF;
+	return NIF_NPOS;
 }
 
 std::streampos NiHeader::GetBlockSizeStreamPos() {
@@ -425,7 +426,7 @@ int NiHeader::FindStringId(const std::string& str) {
 		if (strings[i].GetString() == str)
 			return i;
 
-	return 0xFFFFFFFF;
+	return NIF_NPOS;
 }
 
 int NiHeader::AddOrFindStringId(const std::string& str, const bool addEmpty) {
@@ -434,7 +435,7 @@ int NiHeader::AddOrFindStringId(const std::string& str, const bool addEmpty) {
 			return i;
 
 	if (!addEmpty && str.empty())
-		return 0xFFFFFFFF;
+		return NIF_NPOS;
 
 	int r = strings.size();
 
@@ -483,7 +484,7 @@ void NiHeader::FillStringRefs() {
 			int stringId = r->GetIndex();
 
 			// Check if string index is overflowing
-			if (stringId != 0xFFFFFFFF && stringId >= numStrings) {
+			if (stringId != NIF_NPOS && stringId >= numStrings) {
 				stringId -= numStrings;
 				r->SetIndex(stringId);
 			}
@@ -506,7 +507,7 @@ void NiHeader::UpdateHeaderStrings(const bool hasUnknown) {
 		b->GetStringRefs(stringRefs);
 
 		for (auto &r : stringRefs) {
-			bool addEmpty = (r->GetIndex() != 0xFFFFFFFF);
+			bool addEmpty = (r->GetIndex() != NIF_NPOS);
 			int stringId = AddOrFindStringId(r->GetString(), addEmpty);
 			r->SetIndex(stringId);
 		}

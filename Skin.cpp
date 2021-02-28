@@ -86,7 +86,7 @@ void NiSkinData::notifyVerticesDelete(const std::vector<ushort>& vertIndices) {
 			if (b.vertexWeights[i].index > highestRemoved) {
 				b.vertexWeights[i].index -= vertIndices.size();
 			}
-			else if (indexCollapse[ival] == -1) {
+			else if (indexCollapse[ival] == NIF_NPOS) {
 				b.vertexWeights.erase(b.vertexWeights.begin() + i);
 				b.numVertices--;
 			}
@@ -407,7 +407,7 @@ void NiSkinPartition::notifyVerticesDelete(const std::vector<ushort>& vertIndice
 		// Make list of deleted vertexMap indices
 		std::vector<int> vertexMapDelList;
 		for (int i = 0; i < p.vertexMap.size(); i++)
-			if (indexCollapse[p.vertexMap[i]] == -1)
+			if (indexCollapse[p.vertexMap[i]] == NIF_NPOS)
 				vertexMapDelList.push_back(i);
 
 		// Erase indices of vertexMap, vertexWeights, and boneIndices

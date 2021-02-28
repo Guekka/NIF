@@ -323,7 +323,7 @@ public:
 	virtual float GetGlossiness() { return 0.0f; }
 	virtual void SetGlossiness(const float) {}
 	virtual float GetEnvironmentMapScale() { return 0.0f; }
-	virtual int GetTextureSetRef() { return 0xFFFFFFFF; }
+	virtual int GetTextureSetRef() { return NIF_NPOS; }
 	virtual void SetTextureSetRef(const int) {}
 	virtual Color4 GetEmissiveColor() { return Color4(); }
 	virtual void SetEmissiveColor(const Color4&) {}
@@ -824,7 +824,7 @@ class NiStencilProperty : public NiProperty {
 public:
 	ushort flags = 19840;
 	uint stencilRef = 0;
-	uint stencilMask = 0xFFFFFFFF;
+	uint stencilMask = NIF_NPOS;
 
 	static constexpr const char* BlockName = "NiStencilProperty";
 	virtual const char* GetBlockName() { return BlockName; }

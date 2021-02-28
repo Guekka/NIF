@@ -148,7 +148,7 @@ public:
 	// the partitions' trueTriangles by looking them up in shapeTris.
 	// The new triParts will have the same size as shapeTris.  Though
 	// typically triParts[i] will be between 0 and partitions.size()-1,
-	// it is theoretically possible for some triParts[i] to be -1
+	// it is theoretically possible for some triParts[i] to be NIF_NPOS
 	// (like because of garbage data in the file).
 	void GenerateTriPartsFromTrueTriangles(const std::vector<Triangle> &shapeTris);
 	// GenerateTrueTrianglesFromTriParts: generates the partitions'

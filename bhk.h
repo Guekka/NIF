@@ -292,7 +292,7 @@ enum CollisionMode : uint {
 };
 
 enum BoundVolumeType : uint {
-	BASE_BV = 0xFFFFFFFF,
+	BASE_BV = NIF_NPOS,
 	SPHERE_BV = 0,
 	BOX_BV = 1,
 	CAPSULE_BV = 2,

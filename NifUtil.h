@@ -81,7 +81,7 @@ template<typename IndexType1, typename IndexType2> std::vector<int> GenerateInde
 	int indi = 0;
 	for (int si = 0, di = 0; si < mapSize; ++si) {
 		if (indi < inds.size() && si == inds[indi]) {
-			map[si] = -1;
+			map[si] = NIF_NPOS;
 			++indi;
 		}
 		else

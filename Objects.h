@@ -191,7 +191,7 @@ class TextureRenderData : public NiObject {
 private:
 	PixelFormat pixelFormat = PX_FMT_RGB8;
 	byte bitsPerPixel = 0;
-	int unkInt1 = 0xFFFFFFFF;
+	int unkInt1 = NIF_NPOS;
 	uint unkInt2 = 0;
 	byte flags = 0;
 	uint unkInt3 = 0;

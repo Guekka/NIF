@@ -323,7 +323,7 @@ void NiZBufferProperty::Put(NiStream& stream) {
 void BSShaderProperty::Get(NiStream& stream) {
 	NiProperty::Get(stream);
 
-	if (stream.GetVersion().User() == 12 && stream.GetVersion().Stream() == 155 && name.GetIndex() != 0xFFFFFFFF)
+	if (stream.GetVersion().User() == 12 && stream.GetVersion().Stream() == 155 && name.GetIndex() != NIF_NPOS)
 		return;
 
 	if (stream.GetVersion().User() <= 11) {
@@ -361,7 +361,7 @@ void BSShaderProperty::Get(NiStream& stream) {
 void BSShaderProperty::Put(NiStream& stream) {
 	NiProperty::Put(stream);
 
-	if (stream.GetVersion().User() == 12 && stream.GetVersion().Stream() == 155 && name.GetIndex() != 0xFFFFFFFF)
+	if (stream.GetVersion().User() == 12 && stream.GetVersion().Stream() == 155 && name.GetIndex() != NIF_NPOS)
 		return;
 
 	if (stream.GetVersion().User() <= 11) {
@@ -597,7 +597,7 @@ BSLightingShaderProperty::BSLightingShaderProperty(NiVersion& version) : BSLight
 void BSLightingShaderProperty::Get(NiStream& stream) {
 	BSShaderProperty::Get(stream);
 
-	if (stream.GetVersion().User() == 12 && stream.GetVersion().Stream() == 155 && name.GetIndex() != 0xFFFFFFFF)
+	if (stream.GetVersion().User() == 12 && stream.GetVersion().Stream() == 155 && name.GetIndex() != NIF_NPOS)
 		return;
 
 	textureSetRef.Get(stream);
@@ -718,7 +718,7 @@ void BSLightingShaderProperty::Get(NiStream& stream) {
 void BSLightingShaderProperty::Put(NiStream& stream) {
 	BSShaderProperty::Put(stream);
 
-	if (stream.GetVersion().User() == 12 && stream.GetVersion().Stream() == 155 && name.GetIndex() != 0xFFFFFFFF)
+	if (stream.GetVersion().User() == 12 && stream.GetVersion().Stream() == 155 && name.GetIndex() != NIF_NPOS)
 		return;
 
 	textureSetRef.Put(stream);
@@ -970,7 +970,7 @@ void BSLightingShaderProperty::SetWetMaterialName(const std::string& matName) {
 void BSEffectShaderProperty::Get(NiStream& stream) {
 	BSShaderProperty::Get(stream);
 
-	if (stream.GetVersion().User() == 12 && stream.GetVersion().Stream() == 155 && name.GetIndex() != 0xFFFFFFFF)
+	if (stream.GetVersion().User() == 12 && stream.GetVersion().Stream() == 155 && name.GetIndex() != NIF_NPOS)
 		return;
 
 	sourceTexture.Get(stream, 4);
@@ -1012,7 +1012,7 @@ void BSEffectShaderProperty::Get(NiStream& stream) {
 void BSEffectShaderProperty::Put(NiStream& stream) {
 	BSShaderProperty::Put(stream);
 
-	if (stream.GetVersion().User() == 12 && stream.GetVersion().Stream() == 155 && name.GetIndex() != 0xFFFFFFFF)
+	if (stream.GetVersion().User() == 12 && stream.GetVersion().Stream() == 155 && name.GetIndex() != NIF_NPOS)
 		return;
 
 	sourceTexture.Put(stream, 4, false);
@@ -1075,7 +1075,7 @@ void BSEffectShaderProperty::SetEmissiveMultiple(const float emissive) {
 void BSWaterShaderProperty::Get(NiStream& stream) {
 	BSShaderProperty::Get(stream);
 
-	if (stream.GetVersion().User() == 12 && stream.GetVersion().Stream() == 155 && name.GetIndex() != 0xFFFFFFFF)
+	if (stream.GetVersion().User() == 12 && stream.GetVersion().Stream() == 155 && name.GetIndex() != NIF_NPOS)
 		return;
 
 	stream >> waterFlags;
@@ -1084,7 +1084,7 @@ void BSWaterShaderProperty::Get(NiStream& stream) {
 void BSWaterShaderProperty::Put(NiStream& stream) {
 	BSShaderProperty::Put(stream);
 
-	if (stream.GetVersion().User() == 12 && stream.GetVersion().Stream() == 155 && name.GetIndex() != 0xFFFFFFFF)
+	if (stream.GetVersion().User() == 12 && stream.GetVersion().Stream() == 155 && name.GetIndex() != NIF_NPOS)
 		return;
 
 	stream << waterFlags;
@@ -1094,7 +1094,7 @@ void BSWaterShaderProperty::Put(NiStream& stream) {
 void BSSkyShaderProperty::Get(NiStream& stream) {
 	BSShaderProperty::Get(stream);
 
-	if (stream.GetVersion().User() == 12 && stream.GetVersion().Stream() == 155 && name.GetIndex() != 0xFFFFFFFF)
+	if (stream.GetVersion().User() == 12 && stream.GetVersion().Stream() == 155 && name.GetIndex() != NIF_NPOS)
 		return;
 
 	baseTexture.Get(stream, 4);
@@ -1104,7 +1104,7 @@ void BSSkyShaderProperty::Get(NiStream& stream) {
 void BSSkyShaderProperty::Put(NiStream& stream) {
 	BSShaderProperty::Put(stream);
 
-	if (stream.GetVersion().User() == 12 && stream.GetVersion().Stream() == 155 && name.GetIndex() != 0xFFFFFFFF)
+	if (stream.GetVersion().User() == 12 && stream.GetVersion().Stream() == 155 && name.GetIndex() != NIF_NPOS)
 		return;
 
 	baseTexture.Put(stream, 4, false);

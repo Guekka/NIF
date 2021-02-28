@@ -203,11 +203,11 @@ public:
 	// GetShapeBoneTransform is deprecated.  Use GetShapeTransformGlobalToSkin
 	// or GetShapeTransfromSkinToBone instead.
 	bool GetShapeBoneTransform(NiShape* shape, const std::string& boneName, MatTransform& outTransform);
-	// 0xFFFFFFFF on the bone index returns the overall skin transform for the shape.
+	// NIF_NPOS on the bone index returns the overall skin transform for the shape.
 	// GetShapeBoneTransform is deprecated.  Use GetShapeTransformGlobalToSkin
 	// or GetShapeTransfromSkinToBone instead.
 	bool GetShapeBoneTransform(NiShape* shape, const int boneIndex, MatTransform& outTransform);
-	// 0xFFFFFFFF for the bone index sets the overall skin transform for the shape.
+	// NIF_NPOS for the bone index sets the overall skin transform for the shape.
 	// SetShapeBoneTransform is deprecated.  Use SetShapeTransformGlobalToSkin
 	// or SetShapeTransfromSkinToBone instead.
 	bool SetShapeBoneTransform(NiShape* shape, const int boneIndex, MatTransform& inTransform);

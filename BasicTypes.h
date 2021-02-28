@@ -17,6 +17,8 @@ See the included LICENSE file
 #include <memory>
 #include <iostream>
 
+constexpr auto NIF_NPOS = static_cast<uint>(-1);
+
 enum NiFileVersion : uint {
 	V2_3 = 0x02030000,
 	V3_0 = 0x03000000,
@@ -60,7 +62,7 @@ enum NiFileVersion : uint {
 	V20_6_5_0 = 0x14060500,
 	V30_0_0_2 = 0x1E000002,
 	V30_1_0_3 = 0x1E010003,
-	UNKNOWN = 0xFFFFFFFF
+	UNKNOWN = NIF_NPOS
 };
 
 class NiVersion {
@@ -219,7 +221,7 @@ public:
 class StringRef {
 private:
 	// Temporary index storage for load/save
-	int index = 0xFFFFFFFF;
+	int index = NIF_NPOS;
 	NiString str;
 
 public:
@@ -240,7 +242,7 @@ public:
 	}
 
 	void Clear() {
-		index = 0xFFFFFFFF;
+		index = NIF_NPOS;
 		str.Clear();
 	}
 
@@ -261,7 +263,7 @@ public:
 
 class Ref {
 protected:
-	int index = 0xFFFFFFFF;
+	int index = NIF_NPOS;
 
 public:
     int GetIndex() {
@@ -273,7 +275,7 @@ public:
 	}
 
 	void Clear() {
-		index = 0xFFFFFFFF;
+		index = NIF_NPOS;
 	}
 };
 
@@ -332,7 +334,7 @@ protected:
 			return;
 
 		refs.erase(std::remove_if(refs.begin(), refs.end(), [](BlockRef<T> r) {
-			if (r.GetIndex() == 0xFFFFFFFF)
+			if (r.GetIndex() == NIF_NPOS)
 				return true;
 			else
 				return false;
@@ -403,7 +405,7 @@ public:
 		if (id >= 0 && refs.size() > id)
 			return refs[id].GetIndex();
 
-		return 0xFFFFFFFF;
+		return NIF_NPOS;
 	}
 
 	virtual void SetBlockRef(const int id, const int index) override {
@@ -597,7 +599,7 @@ public:
 		if (it != blocks->end())
 			return std::distance(blocks->begin(), it);
 
-		return 0xFFFFFFFF;
+		return NIF_NPOS;
 	}
 
 	void DeleteBlock(int blockId);
@@ -614,7 +616,7 @@ public:
 
 	template <class T>
 	bool DeleteUnreferencedBlocks(const int rootId, int* deletionCount = nullptr) {
-		if (rootId == 0xFFFFFFFF)
+		if (rootId == NIF_NPOS)
 			return false;
 
 		for (int i = 0; i < numBlocks; i++) {

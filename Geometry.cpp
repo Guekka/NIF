@@ -352,16 +352,16 @@ void NiGeometryData::CalcTangentSpace() {
 NiGeometryData* NiShape::GetGeomData() { return nullptr; };
 void NiShape::SetGeomData(NiGeometryData*) { };
 
-int NiShape::GetSkinInstanceRef() { return 0xFFFFFFFF; }
+int NiShape::GetSkinInstanceRef() { return NIF_NPOS; }
 void NiShape::SetSkinInstanceRef(int) { }
 
-int NiShape::GetShaderPropertyRef() { return 0xFFFFFFFF; }
+int NiShape::GetShaderPropertyRef() { return NIF_NPOS; }
 void NiShape::SetShaderPropertyRef(int) { }
 
-int NiShape::GetAlphaPropertyRef() { return 0xFFFFFFFF; }
+int NiShape::GetAlphaPropertyRef() { return NIF_NPOS; }
 void NiShape::SetAlphaPropertyRef(int) { }
 
-int NiShape::GetDataRef() { return 0xFFFFFFFF; }
+int NiShape::GetDataRef() { return NIF_NPOS; }
 void NiShape::SetDataRef(int) { }
 
 ushort NiShape::GetNumVertices() {
@@ -499,7 +499,7 @@ int NiShape::GetBoneID(NiHeader& hdr, const std::string& boneName) {
 		}
 	}
 
-	return 0xFFFFFFFF;
+	return NIF_NPOS;
 }
 
 bool NiShape::ReorderTriangles(const std::vector<uint>& triInds) {
@@ -1625,13 +1625,13 @@ void BSSubIndexTriShape::SetDefaultSegments() {
 	for (int i = 0; i < 3; i++) {
 		segmentation.segments[i].startIndex = 0;
 		segmentation.segments[i].numPrimitives = 0;
-		segmentation.segments[i].parentArrayIndex = 0xFFFFFFFF;
+		segmentation.segments[i].parentArrayIndex = NIF_NPOS;
 		segmentation.segments[i].numSubSegments = 0;
 	}
 
 	segmentation.segments[3].startIndex = 0;
 	segmentation.segments[3].numPrimitives = numTriangles;
-	segmentation.segments[3].parentArrayIndex = 0xFFFFFFFF;
+	segmentation.segments[3].parentArrayIndex = NIF_NPOS;
 	segmentation.segments[3].numSubSegments = 0;
 
 	numSegments = 0;
@@ -1653,7 +1653,7 @@ void BSSubIndexTriShape::GetSegmentation(NifSegmentationInfo &inf, std::vector<i
 	triParts.clear();
 
 	uint numTris = GetNumTriangles();
-	triParts.resize(numTris, -1);
+	triParts.resize(numTris, NIF_NPOS);
 
 	int partID = 0;
 	int arrayIndex = 0;
@@ -1997,7 +1997,7 @@ void NiGeometry::GetChildIndices(std::vector<int>& indices) {
 }
 
 bool NiGeometry::IsSkinned() {
-	return skinInstanceRef.GetIndex() != 0xFFFFFFFF;
+	return skinInstanceRef.GetIndex() != NIF_NPOS;
 }
 
 int NiGeometry::GetDataRef() {
@@ -2304,7 +2304,7 @@ void NiTriStripsData::notifyVerticesDelete(const std::vector<ushort>& vertIndice
 	// This is not a healthy way to delete strip data. Probably need to restrip the shape.
 	for (int i = 0; i < numStrips; i++) {
 		for (int j = 0; j < stripLengths[i]; j++) {
-			if (indexCollapse[points[i][j]] == -1) {
+			if (indexCollapse[points[i][j]] == NIF_NPOS) {
 				points[i].erase(points[i].begin() + j);
 				stripLengths[i]--;
 				--j;
